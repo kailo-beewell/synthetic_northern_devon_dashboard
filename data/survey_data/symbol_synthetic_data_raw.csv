@@ -1,0 +1,61 @@
+symbol_family,symbol_home,symbol_friends,symbol_choice,symbol_things,symbol_health,symbol_future,symbol_school,symbol_free,symbol_life,gender,year_group,fsm,sen,ethnicity,english_additional,school,symbol_family_lab,symbol_home_lab,symbol_friends_lab,symbol_choice_lab,symbol_things_lab,symbol_health_lab,symbol_future_lab,symbol_school_lab,symbol_free_lab,symbol_life_lab,gender_lab,year_group_lab,fsm_lab,sen_lab,ethnicity_lab,english_additional_lab,school_lab
+2.0,2,1.0,1.0,3.0,1,1.0,2.0,2.0,3.0,0.0,11.0,1,1.0,1.0,1.0,2,Ok,Ok,Happy,Happy,Sad,Happy,Happy,Ok,Ok,Sad,Male,Year 11,FSM,SEN,Ethnic minority,Yes,School B
+,1,1.0,2.0,2.0,3,2.0,,2.0,1.0,1.0,10.0,0,0.0,1.0,1.0,1,,Happy,Happy,Ok,Ok,Sad,Ok,,Ok,Happy,Female,Year 10,Non-FSM,Non-SEN,Ethnic minority,Yes,School A
+,1,2.0,2.0,2.0,1,2.0,2.0,1.0,1.0,1.0,11.0,1,0.0,2.0,1.0,2,,Happy,Ok,Ok,Ok,Happy,Ok,Ok,Happy,Happy,Female,Year 11,FSM,Non-SEN,White British,Yes,School B
+,2,3.0,,2.0,1,2.0,1.0,2.0,3.0,1.0,11.0,0,1.0,2.0,1.0,2,,Ok,Sad,,Ok,Happy,Ok,Happy,Ok,Sad,Female,Year 11,Non-FSM,SEN,White British,Yes,School B
+3.0,1,2.0,2.0,2.0,2,1.0,2.0,2.0,1.0,1.0,10.0,1,0.0,2.0,0.0,2,Sad,Happy,Ok,Ok,Ok,Ok,Happy,Ok,Ok,Happy,Female,Year 10,FSM,Non-SEN,White British,No,School B
+3.0,1,2.0,2.0,2.0,3,2.0,1.0,1.0,,1.0,11.0,1,0.0,1.0,1.0,1,Sad,Happy,Ok,Ok,Ok,Sad,Ok,Happy,Happy,,Female,Year 11,FSM,Non-SEN,Ethnic minority,Yes,School A
+2.0,2,3.0,2.0,1.0,2,2.0,3.0,3.0,1.0,0.0,10.0,0,1.0,2.0,1.0,2,Ok,Ok,Sad,Ok,Happy,Ok,Ok,Sad,Sad,Happy,Male,Year 10,Non-FSM,SEN,White British,Yes,School B
+1.0,1,,2.0,3.0,3,3.0,1.0,2.0,2.0,1.0,9.0,0,1.0,1.0,0.0,2,Happy,Happy,,Ok,Sad,Sad,Sad,Happy,Ok,Ok,Female,Year 9,Non-FSM,SEN,Ethnic minority,No,School B
+2.0,2,3.0,,3.0,2,2.0,2.0,3.0,1.0,0.0,8.0,1,0.0,,1.0,1,Ok,Ok,Sad,,Sad,Ok,Ok,Ok,Sad,Happy,Male,Year 8,FSM,Non-SEN,,Yes,School A
+1.0,3,,3.0,2.0,2,1.0,3.0,3.0,1.0,0.0,9.0,1,1.0,2.0,1.0,2,Happy,Sad,,Sad,Ok,Ok,Happy,Sad,Sad,Happy,Male,Year 9,FSM,SEN,White British,Yes,School B
+1.0,3,2.0,,,2,1.0,3.0,1.0,1.0,1.0,10.0,0,1.0,,0.0,2,Happy,Sad,Ok,,,Ok,Happy,Sad,Happy,Happy,Female,Year 10,Non-FSM,SEN,,No,School B
+3.0,2,3.0,2.0,3.0,1,1.0,2.0,3.0,3.0,0.0,8.0,1,1.0,2.0,0.0,1,Sad,Ok,Sad,Ok,Sad,Happy,Happy,Ok,Sad,Sad,Male,Year 8,FSM,SEN,White British,No,School A
+3.0,2,3.0,3.0,1.0,1,2.0,2.0,2.0,2.0,0.0,9.0,0,1.0,1.0,1.0,1,Sad,Ok,Sad,Sad,Happy,Happy,Ok,Ok,Ok,Ok,Male,Year 9,Non-FSM,SEN,Ethnic minority,Yes,School A
+1.0,2,,3.0,3.0,3,1.0,3.0,3.0,2.0,0.0,,1,0.0,2.0,1.0,1,Happy,Ok,,Sad,Sad,Sad,Happy,Sad,Sad,Ok,Male,,FSM,Non-SEN,White British,Yes,School A
+3.0,1,1.0,3.0,3.0,3,1.0,3.0,,2.0,0.0,9.0,1,1.0,1.0,1.0,2,Sad,Happy,Happy,Sad,Sad,Sad,Happy,Sad,,Ok,Male,Year 9,FSM,SEN,Ethnic minority,Yes,School B
+2.0,3,3.0,,2.0,1,2.0,3.0,3.0,3.0,0.0,8.0,1,,,1.0,1,Ok,Sad,Sad,,Ok,Happy,Ok,Sad,Sad,Sad,Male,Year 8,FSM,,,Yes,School A
+2.0,1,3.0,1.0,2.0,2,1.0,3.0,2.0,1.0,,8.0,1,1.0,1.0,0.0,1,Ok,Happy,Sad,Happy,Ok,Ok,Happy,Sad,Ok,Happy,,Year 8,FSM,SEN,Ethnic minority,No,School A
+1.0,1,3.0,3.0,2.0,2,1.0,1.0,1.0,1.0,1.0,10.0,1,0.0,1.0,1.0,1,Happy,Happy,Sad,Sad,Ok,Ok,Happy,Happy,Happy,Happy,Female,Year 10,FSM,Non-SEN,Ethnic minority,Yes,School A
+3.0,1,3.0,3.0,1.0,2,1.0,3.0,2.0,1.0,0.0,8.0,0,1.0,1.0,1.0,1,Sad,Happy,Sad,Sad,Happy,Ok,Happy,Sad,Ok,Happy,Male,Year 8,Non-FSM,SEN,Ethnic minority,Yes,School A
+2.0,2,1.0,1.0,2.0,2,3.0,3.0,3.0,2.0,1.0,7.0,1,0.0,1.0,,2,Ok,Ok,Happy,Happy,Ok,Ok,Sad,Sad,Sad,Ok,Female,Year 7,FSM,Non-SEN,Ethnic minority,,School B
+3.0,2,3.0,1.0,1.0,1,3.0,2.0,1.0,2.0,1.0,11.0,1,,2.0,0.0,1,Sad,Ok,Sad,Happy,Happy,Happy,Sad,Ok,Happy,Ok,Female,Year 11,FSM,,White British,No,School A
+2.0,2,1.0,1.0,3.0,2,3.0,2.0,2.0,1.0,,8.0,1,0.0,2.0,1.0,1,Ok,Ok,Happy,Happy,Sad,Ok,Sad,Ok,Ok,Happy,,Year 8,FSM,Non-SEN,White British,Yes,School A
+1.0,3,2.0,3.0,1.0,3,2.0,3.0,,2.0,1.0,10.0,0,,2.0,1.0,1,Happy,Sad,Ok,Sad,Happy,Sad,Ok,Sad,,Ok,Female,Year 10,Non-FSM,,White British,Yes,School A
+3.0,3,3.0,2.0,2.0,1,2.0,3.0,1.0,3.0,1.0,11.0,1,1.0,2.0,1.0,1,Sad,Sad,Sad,Ok,Ok,Happy,Ok,Sad,Happy,Sad,Female,Year 11,FSM,SEN,White British,Yes,School A
+3.0,1,1.0,1.0,2.0,3,3.0,3.0,3.0,2.0,1.0,11.0,0,0.0,2.0,1.0,1,Sad,Happy,Happy,Happy,Ok,Sad,Sad,Sad,Sad,Ok,Female,Year 11,Non-FSM,Non-SEN,White British,Yes,School A
+3.0,2,2.0,1.0,3.0,2,,1.0,2.0,3.0,,10.0,1,1.0,1.0,1.0,1,Sad,Ok,Ok,Happy,Sad,Ok,,Happy,Ok,Sad,,Year 10,FSM,SEN,Ethnic minority,Yes,School A
+2.0,3,,1.0,3.0,1,2.0,1.0,2.0,2.0,,7.0,1,0.0,1.0,0.0,2,Ok,Sad,,Happy,Sad,Happy,Ok,Happy,Ok,Ok,,Year 7,FSM,Non-SEN,Ethnic minority,No,School B
+,2,1.0,1.0,2.0,3,3.0,,3.0,2.0,1.0,9.0,0,1.0,1.0,1.0,2,,Ok,Happy,Happy,Ok,Sad,Sad,,Sad,Ok,Female,Year 9,Non-FSM,SEN,Ethnic minority,Yes,School B
+1.0,2,1.0,3.0,2.0,1,2.0,2.0,1.0,3.0,0.0,11.0,1,1.0,1.0,0.0,2,Happy,Ok,Happy,Sad,Ok,Happy,Ok,Ok,Happy,Sad,Male,Year 11,FSM,SEN,Ethnic minority,No,School B
+1.0,1,1.0,3.0,1.0,3,2.0,1.0,3.0,3.0,1.0,9.0,0,0.0,1.0,0.0,2,Happy,Happy,Happy,Sad,Happy,Sad,Ok,Happy,Sad,Sad,Female,Year 9,Non-FSM,Non-SEN,Ethnic minority,No,School B
+3.0,2,3.0,1.0,1.0,2,2.0,3.0,3.0,2.0,1.0,9.0,0,1.0,2.0,,2,Sad,Ok,Sad,Happy,Happy,Ok,Ok,Sad,Sad,Ok,Female,Year 9,Non-FSM,SEN,White British,,School B
+,2,3.0,3.0,1.0,3,2.0,3.0,,1.0,1.0,10.0,0,1.0,1.0,1.0,1,,Ok,Sad,Sad,Happy,Sad,Ok,Sad,,Happy,Female,Year 10,Non-FSM,SEN,Ethnic minority,Yes,School A
+2.0,2,2.0,3.0,,3,1.0,2.0,3.0,1.0,1.0,9.0,1,0.0,2.0,1.0,2,Ok,Ok,Ok,Sad,,Sad,Happy,Ok,Sad,Happy,Female,Year 9,FSM,Non-SEN,White British,Yes,School B
+3.0,2,3.0,1.0,1.0,2,1.0,3.0,2.0,2.0,,8.0,1,1.0,1.0,0.0,2,Sad,Ok,Sad,Happy,Happy,Ok,Happy,Sad,Ok,Ok,,Year 8,FSM,SEN,Ethnic minority,No,School B
+,2,3.0,2.0,1.0,2,3.0,1.0,1.0,3.0,1.0,9.0,1,0.0,2.0,1.0,2,,Ok,Sad,Ok,Happy,Ok,Sad,Happy,Happy,Sad,Female,Year 9,FSM,Non-SEN,White British,Yes,School B
+2.0,2,2.0,2.0,,3,2.0,,3.0,2.0,1.0,9.0,0,0.0,1.0,0.0,2,Ok,Ok,Ok,Ok,,Sad,Ok,,Sad,Ok,Female,Year 9,Non-FSM,Non-SEN,Ethnic minority,No,School B
+,2,2.0,3.0,2.0,1,3.0,1.0,2.0,3.0,1.0,8.0,1,1.0,,0.0,2,,Ok,Ok,Sad,Ok,Happy,Sad,Happy,Ok,Sad,Female,Year 8,FSM,SEN,,No,School B
+,1,2.0,3.0,1.0,1,2.0,1.0,3.0,,1.0,8.0,1,1.0,2.0,1.0,1,,Happy,Ok,Sad,Happy,Happy,Ok,Happy,Sad,,Female,Year 8,FSM,SEN,White British,Yes,School A
+2.0,2,2.0,1.0,3.0,1,3.0,2.0,3.0,1.0,0.0,8.0,0,0.0,2.0,1.0,2,Ok,Ok,Ok,Happy,Sad,Happy,Sad,Ok,Sad,Happy,Male,Year 8,Non-FSM,Non-SEN,White British,Yes,School B
+3.0,3,1.0,1.0,1.0,3,1.0,3.0,1.0,2.0,1.0,11.0,0,0.0,1.0,0.0,1,Sad,Sad,Happy,Happy,Happy,Sad,Happy,Sad,Happy,Ok,Female,Year 11,Non-FSM,Non-SEN,Ethnic minority,No,School A
+1.0,2,2.0,3.0,,1,1.0,2.0,,2.0,1.0,8.0,1,0.0,1.0,1.0,1,Happy,Ok,Ok,Sad,,Happy,Happy,Ok,,Ok,Female,Year 8,FSM,Non-SEN,Ethnic minority,Yes,School A
+1.0,1,2.0,,2.0,1,3.0,3.0,2.0,1.0,1.0,,1,1.0,,,2,Happy,Happy,Ok,,Ok,Happy,Sad,Sad,Ok,Happy,Female,,FSM,SEN,,,School B
+2.0,1,2.0,2.0,,2,1.0,3.0,1.0,1.0,1.0,11.0,0,1.0,2.0,0.0,2,Ok,Happy,Ok,Ok,,Ok,Happy,Sad,Happy,Happy,Female,Year 11,Non-FSM,SEN,White British,No,School B
+1.0,2,1.0,,1.0,2,2.0,,2.0,3.0,0.0,8.0,0,1.0,1.0,0.0,1,Happy,Ok,Happy,,Happy,Ok,Ok,,Ok,Sad,Male,Year 8,Non-FSM,SEN,Ethnic minority,No,School A
+2.0,1,,3.0,1.0,2,1.0,3.0,2.0,2.0,,8.0,0,1.0,1.0,0.0,2,Ok,Happy,,Sad,Happy,Ok,Happy,Sad,Ok,Ok,,Year 8,Non-FSM,SEN,Ethnic minority,No,School B
+3.0,1,3.0,3.0,2.0,2,2.0,3.0,1.0,3.0,0.0,8.0,0,0.0,1.0,1.0,1,Sad,Happy,Sad,Sad,Ok,Ok,Ok,Sad,Happy,Sad,Male,Year 8,Non-FSM,Non-SEN,Ethnic minority,Yes,School A
+2.0,1,3.0,1.0,3.0,1,2.0,2.0,3.0,1.0,0.0,9.0,0,,2.0,0.0,1,Ok,Happy,Sad,Happy,Sad,Happy,Ok,Ok,Sad,Happy,Male,Year 9,Non-FSM,,White British,No,School A
+2.0,2,2.0,1.0,2.0,1,,3.0,,,1.0,9.0,1,0.0,2.0,1.0,2,Ok,Ok,Ok,Happy,Ok,Happy,,Sad,,,Female,Year 9,FSM,Non-SEN,White British,Yes,School B
+3.0,3,1.0,3.0,3.0,1,3.0,,2.0,1.0,,8.0,0,,2.0,0.0,1,Sad,Sad,Happy,Sad,Sad,Happy,Sad,,Ok,Happy,,Year 8,Non-FSM,,White British,No,School A
+1.0,2,2.0,,,1,3.0,2.0,,2.0,1.0,8.0,0,,2.0,0.0,1,Happy,Ok,Ok,,,Happy,Sad,Ok,,Ok,Female,Year 8,Non-FSM,,White British,No,School A
+2.0,2,1.0,2.0,1.0,3,2.0,1.0,2.0,2.0,0.0,9.0,1,0.0,1.0,0.0,2,Ok,Ok,Happy,Ok,Happy,Sad,Ok,Happy,Ok,Ok,Male,Year 9,FSM,Non-SEN,Ethnic minority,No,School B
+2.0,2,1.0,3.0,,3,3.0,2.0,2.0,2.0,,7.0,0,1.0,1.0,1.0,2,Ok,Ok,Happy,Sad,,Sad,Sad,Ok,Ok,Ok,,Year 7,Non-FSM,SEN,Ethnic minority,Yes,School B
+,2,1.0,2.0,2.0,1,1.0,2.0,3.0,3.0,,7.0,1,1.0,,1.0,2,,Ok,Happy,Ok,Ok,Happy,Happy,Ok,Sad,Sad,,Year 7,FSM,SEN,,Yes,School B
+1.0,2,2.0,2.0,,2,2.0,,1.0,1.0,,10.0,0,0.0,1.0,1.0,1,Happy,Ok,Ok,Ok,,Ok,Ok,,Happy,Happy,,Year 10,Non-FSM,Non-SEN,Ethnic minority,Yes,School A
+3.0,3,3.0,1.0,,1,2.0,1.0,1.0,3.0,0.0,10.0,1,0.0,,0.0,1,Sad,Sad,Sad,Happy,,Happy,Ok,Happy,Happy,Sad,Male,Year 10,FSM,Non-SEN,,No,School A
+1.0,3,,1.0,3.0,2,2.0,1.0,,3.0,1.0,8.0,1,,1.0,,1,Happy,Sad,,Happy,Sad,Ok,Ok,Happy,,Sad,Female,Year 8,FSM,,Ethnic minority,,School A
+1.0,3,1.0,2.0,2.0,2,1.0,,1.0,2.0,1.0,11.0,0,1.0,2.0,,2,Happy,Sad,Happy,Ok,Ok,Ok,Happy,,Happy,Ok,Female,Year 11,Non-FSM,SEN,White British,,School B
+3.0,2,3.0,3.0,1.0,2,,1.0,3.0,3.0,1.0,7.0,0,1.0,1.0,0.0,2,Sad,Ok,Sad,Sad,Happy,Ok,,Happy,Sad,Sad,Female,Year 7,Non-FSM,SEN,Ethnic minority,No,School B
+3.0,2,2.0,3.0,3.0,3,2.0,2.0,1.0,2.0,1.0,11.0,1,,1.0,0.0,1,Sad,Ok,Ok,Sad,Sad,Sad,Ok,Ok,Happy,Ok,Female,Year 11,FSM,,Ethnic minority,No,School A
+2.0,3,2.0,1.0,1.0,2,2.0,1.0,2.0,,0.0,10.0,1,1.0,1.0,1.0,1,Ok,Sad,Ok,Happy,Happy,Ok,Ok,Happy,Ok,,Male,Year 10,FSM,SEN,Ethnic minority,Yes,School A
