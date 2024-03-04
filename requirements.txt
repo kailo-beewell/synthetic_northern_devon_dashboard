@@ -4,6 +4,9 @@ pandas==2.1.1
 pip==24.0
 plotly==5.9.0
 
+# To generate previews of figures in notebooks
+matplotlib==3.8.3
+
 # For linting jupyter notebooks
 nbqa==1.7.1
 flake8==7.0.0
