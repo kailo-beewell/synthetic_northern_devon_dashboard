@@ -33,5 +33,5 @@ ipykernel==6.29.0
 # No version for security updates
 streamlit>=1.31.1
 
-# Functions for the dashboard
-kailo_beewell_dashboard==0.2.0
+# Local live import of functions for the dashboard
+-e ../kailo_beewell_dashboard_package
