@@ -1,5 +1,7 @@
 from kailo_beewell_dashboard.explore_results import (
+    create_bar_charts,
     create_topic_dict,
+    get_chosen_result,
     write_response_section_intro,
     write_topic_intro)
 from kailo_beewell_dashboard.page_setup import (
@@ -12,6 +14,8 @@ page_setup('public')
 # Import data
 df_scores = pd.read_csv(
     'data/survey_data/standard_area_aggregate_scores_rag.csv')
+df_prop = pd.read_csv(
+    'data/survey_data/standard_nd_aggregate_responses.csv')
 
 ##################
 # Getting topics #
@@ -61,6 +65,15 @@ blank_lines(1)
 # Section header and description
 write_response_section_intro(chosen_variable_lab, type='public')
 
-# Next step: create df_prop
+# Get dataframe with results for the chosen variable and group
+chosen_result = get_chosen_result(
+    chosen_variable=chosen_variable,
+    chosen_group=chosen_group,
+    df=df_prop,
+    school=None,
+    survey_type='standard')
+
+# Produce bar charts w/ accompanying chart section descriptions and titles
+create_bar_charts(chosen_variable, chosen_result)
 
 page_footer('schools in Northern Devon')
