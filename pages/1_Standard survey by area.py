@@ -1,4 +1,3 @@
-import branca.colormap as cm
 import folium
 import geopandas as gpd
 from kailo_beewell_dashboard.explore_results import (
@@ -13,19 +12,37 @@ from streamlit_folium import st_folium
 
 page_setup('public')
 
-# Import data
-df_scores = pd.read_csv(
-    'data/survey_data/standard_area_aggregate_scores_rag.csv')
+# Import data to session state if not already (this will later be done
+# upon opening app on first page, with CSV data in TIDB Cloud)
+if 'scores_rag' not in st.session_state:
+    st.session_state.scores_rag = pd.read_csv(
+        'data/survey_data/standard_area_aggregate_scores_rag.csv')
+if 'shapes' not in st.session_state:
+    # Import shapefile
+    shp_nd = gpd.read_file('data/area_data/shapefile_nd/shp_nd.shp')
+    # Filter to required columns (helps map speed)
+    shp_nd = (shp_nd[['MSOA21NM', 'geometry']]
+              .rename(columns={'MSOA21NM': 'msoa'}))
+    # Simplify geometry (helps map speed)
+    shp_nd['geometry'] = shp_nd['geometry'].simplify(1)
+    # Save to session state
+    st.session_state.shapes = shp_nd
 
-# Import shapefile, filtering just to data we need
-shp_nd = gpd.read_file('data/area_data/shapefile_nd/shp_nd.shp')
-shapes = shp_nd[['MSOA21NM', 'geometry']].rename(columns={'MSOA21NM': 'msoa'})
+# As we play around this one, import it from session state
+df_scores = st.session_state.scores_rag
 
 #####################
 # Page introduction #
 #####################
 
-st.title('Standard survey results by area')
+st.title('Standard survey')
+
+blank_lines(1)
+view = st.selectbox('What would you like to view?', [
+    'Explore results by area',
+    'Explore results by characteristics',
+    'Who took part?'])
+blank_lines(2)
 
 st.subheader('Introduction')
 st.markdown('''This page shows how the results from young people varied
@@ -62,7 +79,7 @@ with cols[0]:
     }}''',):
         blank_lines(1)
         st.markdown(
-            '''<p style='text-align: center; color: #19539A'>n<10 </p>''',
+            '''<p style='text-align: center; color: #6B7787;'>n<10 </p>''',
             unsafe_allow_html=True)
         blank_lines(1)
 with cols[1]:
@@ -98,69 +115,97 @@ chosen_variable = topic_dict[chosen_variable_lab]
 # Map #
 #######
 
-# Filter to chosen topic
+# Filter to chosen topic then filter to only used column (helps map speed)
 chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
+msoa_rag = chosen_result[['msoa', 'rag']]
 
 # Merge data on scores per MSOA with the MSOA shapefile
-to_plot = pd.merge(shapes, chosen_result, on='msoa')
+to_plot = pd.merge(st.session_state.shapes, msoa_rag, on='msoa')
 
 # Set centre manually
 x_map = -4.075
-y_map = 50.9765
+y_map = 50.955
 
 # Initialise map
-map = folium.Map(location=[y_map, x_map], zoom_start=10, tiles=None)
+map = folium.Map(location=[y_map, x_map], zoom_start=10, tiles=None,
+                 scrollWheelZoom=False)
 
-# Add tiles
+# Add tiles (allows us to superimmpose images over the map tiles)
 folium.TileLayer(
     'CartoDB positron', name='Light Map', control=False).add_to(map)
 
-# Create custom colormap (use slightly bolder versions of the HEX above
-# as they get washed out/less distinct in colour-blind test due to opacity)
-# Based on playing around with https://www.colorhexa.com/ and
-# https://www.color-blindness.com/coblis-color-blindness-simulator/
-# Red #FFCCCC --> #FFB3B3
-# Yellow #FFE8BF --> #FFDFA6
-# Green #B6E6B6 --> #A3DFA3 --> #90D890 --> #7DD27D
-# Blue #DCE4FF --> #C3D0FF
-colormap = cm.StepColormap(
-    colors=['#FFB3B3', '#FFDFA6', '#7DD27D'],
-    vmin=to_plot['mean'].min(),
-    vmax=to_plot['mean'].max()
-)
-colormap.caption = f'Mean score for topic of "{chosen_variable_lab}"'
+
+def rag_colormap(feature):
+    '''
+    Function to produce the RAG colourmap
+
+    Parameters
+    ----------
+    feature : string
+        e.g. x['properties']['mean']
+    '''
+    if feature == 'below':
+        return '#FFB3B3'
+    elif feature == 'average':
+        return '#FFDFA6'
+    elif feature == 'above':
+        return '#7DD27D'
+    else:
+        return '#F6FAFF'
 
 
-# Add colourful polygons
 def style_function(x):
-    return {'weight': 0.5,
-            'color': 'black',
-            'fillColor': colormap(x['properties']['mean'])
-            if x['properties']['mean'] is not None
-            else '#f6faff',
-            'fillOpacity': 0.75}
+    '''
+    Style function used to produce colourful polygons in map
+    Uncertain on what exactly the positional argument is
+
+    Returns
+    -------
+    style : dictionary
+        Dictionary with attributes of polygons
+    '''
+    style = {'weight': 0.5,
+             'color': 'black',
+             'fillColor': rag_colormap(x['properties']['rag']),
+             'fillOpacity': 0.75}
+    return style
 
 
 def highlight_function(x):
-    return {'fillColor': '#000000',
-            'color': '#000000',
-            'fillOpacity': 0.50,
-            'weight': 0.1}
+    '''
+    Highlight function to change fill colour when hover mouse over polygon
+    Requires positional argument (as GeoJson will provide it one)
+
+    Returns
+    -------
+    highlight : dictionary
+        Dictionary with attributes of polygons when hovered over
+    '''
+    highlight = {'fillColor': '#32112F',
+                 'color': '#32112F',
+                 'fillOpacity': 0.50,
+                 'weight': 0.1}
+    return highlight
 
 
+# Add polygons to the map
 MSOA = folium.features.GeoJson(
-    to_plot,
+    data=to_plot,
+    # Function mapping GeoJson Feature to a style dict (normal + mouse events)
     style_function=style_function,
-    control=False,
     highlight_function=highlight_function,
+    # Whether layer will be included in layer controls
+    control=False,
+    # Whether to Zoom in on polygon when clicked
+    zoom_on_click=False,
+    # Display text when hovering over object
     tooltip=folium.features.GeoJsonTooltip(
         fields=['msoa', 'rag'],
         aliases=['MSOA:', 'Score:'],
         style=('''
-background-color: white; color: #333333; font-family: arial;
+background-color: white; color: #05291F; font-family: sans-serif;
 font-size: 12px; padding: 10px;'''),
         sticky=True))
-colormap.add_to(map)
 map.add_child(MSOA)
 
 # Display map on streamlit
