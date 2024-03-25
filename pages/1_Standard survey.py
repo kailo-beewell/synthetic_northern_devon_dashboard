@@ -34,37 +34,87 @@ df_scores = st.session_state.scores_rag
 
 # Page title and introduction
 st.title('Standard #BeeWell survey')
+
+# Switching buttons
+# PROBLEM: Feels confusing
+pages = {'area': 'Switch to view by characteristic',
+         'characteristic': 'Switch to view by area'}
+
+if 'btnptr' not in st.session_state:
+    st.session_state.btnptr = 'area'
+
+
+def btnCB():
+    if st.session_state.btnptr == 'area':
+        st.session_state.btnptr = 'characteristic'
+    else:
+        st.session_state.btnptr = 'area'
+
+
+with st.container(border=True):
+    st.markdown(f'''
+The standard #BeeWell survey was completed by **N** pupils in Years 8 and
+10 at **N** mainstream schools. You are currently viewing results
+by {st.session_state.btnptr}.''')
+    st.button(pages[st.session_state.btnptr], on_click=btnCB,
+              use_container_width=True)
+
+# Radio buttons
+# PROBLEM: DON'T STAND OUT
 st.markdown('''
-The standard #BeeWell survey was completed by **N** pupils in Years 8 and 10
-at **N** mainstream schools. Use the selectbox below to choose whether you
-want to view:
-* **Results by area**
-* **Results by characteristics** - year group, gender, free school meal
-(FSM) eligibility, and special education needs (SEN)
-''')
+The standard #BeeWell survey was completed by **N** pupils in Years 8 and
+10 at **N** mainstream schools.''')
+st.radio(label='You can choose to explore results either:',
+         options=['By area', 'By characteristics'])
 
-# Select page view
-pages = {
-    'Results by area': 'area',
-    'Results by characteristics': 'demographic'}
-chosen_page = st.selectbox('**View:**', list(pages.keys()))
+# Buttons to choose between area or characteristics
 
-# Create selectbox to get chosen topic, and set default as Autonomy
-chosen_variable_lab, chosen_variable = choose_topic(
-    df_scores, include_raw_name=True)
+st.markdown('''
+<style>
+.element-container:has(style){
+    display: none;
+}
+#button-after {
+    display: none;
+}
+.element-container:has(#button-after) {
+    display: none;
+}
+.element-container:has(#button-after) + div button {
+    background-color: #FFDACD;
+}
+</style>
+''', unsafe_allow_html=True)
 
-blank_lines(1)
-st.divider()
+st.markdown('''
+The standard #BeeWell survey was completed by **N** pupils in Years 8 and
+10 at **N** mainstream schools. You can view results either:''')
+cols = st.columns(2)
+with cols[0]:
+    st.markdown('''<span id='button-after'></span>''', unsafe_allow_html=True)
+    if st.button('By area', key='btn_area_active', use_container_width=True):
+        st.session_state.standard_page = 'area'
+with cols[1]:
+    if st.button('By characteristics', key='b_char', use_container_width=True):
+        st.session_state.standard_page = 'char'
+
+# Set default page
+if 'standard_page' not in st.session_state:
+    st.session_state.standard_page = 'area'
 
 ###################
 # Results by area #
 ###################
 
-if pages[chosen_page] == 'area':
+if st.session_state.standard_page == 'area':
     st.subheader('Results by area')
     st.markdown('''
-This page shows how the results from young people varied across Northern Devon
-by Middle Layer Super Output Area (MSOA).''')
+This page shows how the overall topic scores from young people varied across
+Northern Devon by Middle Layer Super Output Area (MSOA).''')
+
+    # Create selectbox to get chosen topic, and set default as Autonomy
+    chosen_variable_lab, chosen_variable = choose_topic(
+        df_scores, include_raw_name=True)
 
     # Filter to chosen topic then filter to only used column (helps map speed)
     chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
@@ -114,7 +164,7 @@ by Middle Layer Super Output Area (MSOA).''')
 # Results by characteristic #
 #############################
 
-if pages[chosen_page] == 'demographic':
+if st.session_state.standard_page == 'char':
     st.subheader('Results by characteristics')
 
     # Import data
