@@ -2,6 +2,7 @@ import json
 from kailo_beewell_dashboard.explore_results import (
     choose_topic,
     create_bar_charts,
+    create_topic_dict,
     get_chosen_result,
     write_response_section_intro,
     write_topic_intro)
@@ -9,6 +10,7 @@ from kailo_beewell_dashboard.map import rag_guide
 from kailo_beewell_dashboard.page_setup import (
     blank_lines, page_footer, page_setup)
 from kailo_beewell_dashboard.reuse_text import caution_comparing
+from kailo_beewell_dashboard.score_descriptions import score_descriptions
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -29,78 +31,53 @@ if 'geojson_nd' not in st.session_state:
     f = open('data/area_data/geojson/combined_nd.geojson')
     st.session_state.geojson_nd = json.load(f)
 
+df_prop = pd.read_csv('data/survey_data/standard_nd_aggregate_responses.csv')
+
 # As we play around this one, import it from session state
 df_scores = st.session_state.scores_rag
+
+# Create topic dictionary
+topic_dict = create_topic_dict(df_scores)
+
+# Create dictionary where key is topic name and value is topic description
+# (Duplication with explore_results.write_topic_intro())
+description = (df_scores[['variable', 'description']]
+               .drop_duplicates()
+               .set_index('variable')
+               .to_dict()['description'])
 
 # Page title and introduction
 st.title('Standard #BeeWell survey')
 
-# Switching buttons
-# PROBLEM: Feels confusing
-pages = {'area': 'Switch to view by characteristic',
-         'characteristic': 'Switch to view by area'}
+# Introduction and choose page
 
-if 'btnptr' not in st.session_state:
-    st.session_state.btnptr = 'area'
+# Set default page
+if 'standard_page' not in st.session_state:
+    st.session_state.standard_page = 'area'
 
+# Set button text weight depending on current choice
+if st.session_state.standard_page == 'area':
+    btn_area_txt = '**By area**'
+    btn_char_txt = 'By characteristic'
+elif st.session_state.standard_page == 'char':
+    btn_area_txt = 'By area'
+    btn_char_txt = '**By characteristic**'
 
-def btnCB():
-    if st.session_state.btnptr == 'area':
-        st.session_state.btnptr = 'characteristic'
-    else:
-        st.session_state.btnptr = 'area'
-
-
-with st.container(border=True):
-    st.markdown(f'''
-The standard #BeeWell survey was completed by **N** pupils in Years 8 and
-10 at **N** mainstream schools. You are currently viewing results
-by {st.session_state.btnptr}.''')
-    st.button(pages[st.session_state.btnptr], on_click=btnCB,
-              use_container_width=True)
-
-# Radio buttons
-# PROBLEM: DON'T STAND OUT
-st.markdown('''
-The standard #BeeWell survey was completed by **N** pupils in Years 8 and
-10 at **N** mainstream schools.''')
-st.radio(label='You can choose to explore results either:',
-         options=['By area', 'By characteristics'])
-
-# Buttons to choose between area or characteristics
-
-st.markdown('''
-<style>
-.element-container:has(style){
-    display: none;
-}
-#button-after {
-    display: none;
-}
-.element-container:has(#button-after) {
-    display: none;
-}
-.element-container:has(#button-after) + div button {
-    background-color: #FFDACD;
-}
-</style>
-''', unsafe_allow_html=True)
-
+st.divider()
 st.markdown('''
 The standard #BeeWell survey was completed by **N** pupils in Years 8 and
 10 at **N** mainstream schools. You can view results either:''')
 cols = st.columns(2)
 with cols[0]:
-    st.markdown('''<span id='button-after'></span>''', unsafe_allow_html=True)
-    if st.button('By area', key='btn_area_active', use_container_width=True):
+    if st.button(btn_area_txt, key='btn_area', use_container_width=True):
         st.session_state.standard_page = 'area'
+        st.rerun()
 with cols[1]:
-    if st.button('By characteristics', key='b_char', use_container_width=True):
+    if st.button(btn_char_txt, key='btn_char', use_container_width=True):
         st.session_state.standard_page = 'char'
-
-# Set default page
-if 'standard_page' not in st.session_state:
-    st.session_state.standard_page = 'area'
+        st.rerun()
+st.divider()
+blank_lines(2)
 
 ###################
 # Results by area #
@@ -108,13 +85,35 @@ if 'standard_page' not in st.session_state:
 
 if st.session_state.standard_page == 'area':
     st.subheader('Results by area')
-    st.markdown('''
-This page shows how the overall topic scores from young people varied across
-Northern Devon by Middle Layer Super Output Area (MSOA).''')
+    st.markdown(f'''
+**Introduction:**
 
-    # Create selectbox to get chosen topic, and set default as Autonomy
+There were {len(topic_dict)} topics in the standard #BeeWell survey, each
+composed of one or several items. In this section, an overall score has been
+calculated for each topic, allowing you to compare scores between different
+areas of Northern Devon. These are based just on responses from young people
+who completed all of the questions for a given topic.
+
+Results are presented by Middle Layer Super Output Area (MSOA). These are
+geographic areas that were designed to improve reporting of small area
+statistics.''')
+    blank_lines(1)
+
+    # Add key to RAG
+    st.markdown('**Guide to the map:**')
+    rag_guide()
+
+    # Create selectbox to get chosen topic
     chosen_variable_lab, chosen_variable = choose_topic(
         df_scores, include_raw_name=True)
+
+    # Add topic description
+    topic_name = chosen_variable_lab.lower()
+    topic_descrip = description[f'{chosen_variable}_score'].lower().lstrip()
+    st.markdown(f'''
+This map is based on overall scores for the topic of '{topic_name}'.
+This topic is about **{topic_descrip}**, higher scores
+indicating {score_descriptions[chosen_variable][1]}.''')
 
     # Filter to chosen topic then filter to only used column (helps map speed)
     chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
@@ -152,10 +151,6 @@ Northern Devon by Middle Layer Super Output Area (MSOA).''')
     st.plotly_chart(fig)
     blank_lines(1)
 
-    # Add key to RAG
-    st.markdown('**Guide to the map:**')
-    rag_guide()
-
     # Add caveat for interpretation
     st.markdown('**Comparing between areas:**')
     st.markdown(caution_comparing('area'))
@@ -167,11 +162,9 @@ Northern Devon by Middle Layer Super Output Area (MSOA).''')
 if st.session_state.standard_page == 'char':
     st.subheader('Results by characteristics')
 
-    # Import data
-    df_scores = pd.read_csv(
-        'data/survey_data/standard_area_aggregate_scores_rag.csv')
-    df_prop = pd.read_csv(
-        'data/survey_data/standard_nd_aggregate_responses.csv')
+    # Create selectbox to get chosen topic
+    chosen_variable_lab, chosen_variable = choose_topic(
+        df_scores, include_raw_name=True)
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
