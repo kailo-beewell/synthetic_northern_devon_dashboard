@@ -33,18 +33,16 @@ area_intro()
 st.subheader('Results by MSOA')
 
 # Create selectbox and get chosen topic
-chosen_variable_lab = choose_topic(df_scores)
+chosen_variable_lab = choose_topic(df_scores, include_raw_name=False)
 
-# Replace NaN with "n<10", and use full label names for other categories
-df_scores['rag'] = df_scores['rag'].map({
+# Filter to chosen topic then filter to only used column (helps map speed)
+chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
+msoa_rag = chosen_result[['msoa', 'rag']].copy()
+msoa_rag['rag'] = msoa_rag['rag'].map({
     'below': 'Below average',
     'average': 'Average',
     'above': 'Above average',
     np.nan: 'n<10'})
-
-# Filter to chosen topic then filter to only used column (helps map speed)
-chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
-msoa_rag = chosen_result[['msoa', 'rag']]
 
 #######
 # Map #
