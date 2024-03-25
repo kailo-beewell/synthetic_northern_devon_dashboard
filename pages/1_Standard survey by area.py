@@ -1,13 +1,13 @@
+import json
 from kailo_beewell_dashboard.map import (
     area_intro, choose_topic)
 from kailo_beewell_dashboard.page_setup import (
-    page_footer, page_setup)
+    blank_lines, page_footer, page_setup)
 from kailo_beewell_dashboard.reuse_text import caution_comparing
+import numpy as np
 import pandas as pd
-import streamlit as st
-
 import plotly.express as px
-import json
+import streamlit as st
 
 ##########
 # Set-up #
@@ -37,27 +37,45 @@ chosen_variable_lab = choose_topic(df_scores)
 
 # Filter to chosen topic then filter to only used column (helps map speed)
 chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
-msoa_rag = chosen_result[['msoa', 'mean']]
+msoa_rag = chosen_result[['msoa', 'rag']]
 
 #######
 # Map #
 #######
 
+# Replace NaN with "n<10", and use full label names for other categories
+msoa_rag['rag'] = msoa_rag['rag'].map({
+    'below': 'Below average',
+    'average': 'Average',
+    'above': 'Above average',
+    np.nan: 'n<10'})
+
+# Create map
 fig = px.choropleth_mapbox(
     msoa_rag,
     geojson=st.session_state.geojson_nd,
     locations='msoa',
-    color='mean',
     featureidkey="properties.MSOA11NM",
-    color_continuous_scale="Viridis",
-    mapbox_style="carto-positron",
-    center={'lat': 50.955, 'lon': -4.075},
-    zoom=8,
-    labels={'val': 'value'})
+    # Colour rules
+    color='rag',
+    color_discrete_map={'Below average': '#FFB3B3',
+                        'Average': '#FFDFA6',
+                        'Above average': '#7DD27D',
+                        'n<10': '#F6FAFF'},
+    opacity=0.75,
+    # Base map stryle
+    mapbox_style='carto-positron',
+    # Positioning of map on load
+    center={'lat': 50.955, 'lon': -4.1},
+    zoom=8.4,
+    labels={'rag': 'Result'},
+    # Control legend order
+    category_orders={
+        'rag': ['Below average', 'Average', 'Above average', 'n<10']})
 
 fig.update_layout(margin={'r': 0, 't': 0, 'l': 0, 'b': 0})
-
 st.plotly_chart(fig)
+blank_lines(1)
 
 # Add caveat for interpretation
 st.subheader('Comparing between areas')
