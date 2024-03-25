@@ -35,11 +35,10 @@ There are six pages to see on this dashboard, which you can navigate to using
 the sidebar on the left. These are:
 * **About** - Read information on the #BeeWell survey, Kailo, and this
 dashboard
-* **Standard survey by area** - tbc
-* **Standard survey by characteristics** - tbc
-* **Standard survey sample** - tbc
-* **Symbol survey results** - tbc
-* **Symbol survey sample** - tbc''')
+* **Standard survey** - Explore overall topic scores by area, and view
+the responses to each question overall or by pupil characteristics.
+* **Symbol survey** - Explore responses to the ten questions overall or
+by pupil characteristics.''')
 
 blank_lines(2)
 
