@@ -1,6 +1,6 @@
 import json
-from kailo_beewell_dashboard.map import (
-    area_intro, choose_topic)
+from kailo_beewell_dashboard.explore_results import choose_topic
+from kailo_beewell_dashboard.map import area_intro
 from kailo_beewell_dashboard.page_setup import (
     blank_lines, page_footer, page_setup)
 from kailo_beewell_dashboard.reuse_text import caution_comparing
@@ -35,6 +35,13 @@ st.subheader('Results by MSOA')
 # Create selectbox and get chosen topic
 chosen_variable_lab = choose_topic(df_scores)
 
+# Replace NaN with "n<10", and use full label names for other categories
+df_scores['rag'] = df_scores['rag'].map({
+    'below': 'Below average',
+    'average': 'Average',
+    'above': 'Above average',
+    np.nan: 'n<10'})
+
 # Filter to chosen topic then filter to only used column (helps map speed)
 chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
 msoa_rag = chosen_result[['msoa', 'rag']]
@@ -42,13 +49,6 @@ msoa_rag = chosen_result[['msoa', 'rag']]
 #######
 # Map #
 #######
-
-# Replace NaN with "n<10", and use full label names for other categories
-msoa_rag['rag'] = msoa_rag['rag'].map({
-    'below': 'Below average',
-    'average': 'Average',
-    'above': 'Above average',
-    np.nan: 'n<10'})
 
 # Create map
 fig = px.choropleth_mapbox(
