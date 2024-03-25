@@ -3,9 +3,7 @@ from kailo_beewell_dashboard.explore_results import (
     choose_topic,
     create_bar_charts,
     create_topic_dict,
-    get_chosen_result,
-    write_response_section_intro,
-    write_topic_intro)
+    get_chosen_result)
 from kailo_beewell_dashboard.map import rag_guide
 from kailo_beewell_dashboard.page_setup import (
     blank_lines, page_footer, page_setup)
@@ -112,7 +110,7 @@ statistics.''')
     topic_descrip = description[f'{chosen_variable}_score'].lower().lstrip()
     st.markdown(f'''
 This map is based on overall scores for the topic of '{topic_name}'.
-This topic is about **{topic_descrip}**, higher scores
+This topic is about **{topic_descrip}**, with higher scores
 indicating {score_descriptions[chosen_variable][1]}.''')
 
     # Filter to chosen topic then filter to only used column (helps map speed)
@@ -161,6 +159,16 @@ indicating {score_descriptions[chosen_variable][1]}.''')
 
 if st.session_state.standard_page == 'char':
     st.subheader('Results by characteristics')
+    st.markdown('''
+**Introduction:**
+
+In this section, you can see how young people from across Northern Devon
+responded to each of the questions in the survey. You can view results:
+* For all pupils
+* By year group
+* By gender
+* By free school meal (FSM) eligibility
+* By whether pupils have special educational needs (SEN)''')
 
     # Create selectbox to get chosen topic
     chosen_variable_lab, chosen_variable = choose_topic(
@@ -172,13 +180,14 @@ if st.session_state.standard_page == 'char':
                               'By gender', 'By FSM', 'By SEN'])
     blank_lines(2)
 
-    # Topic header and description
-    st.divider()
-    write_topic_intro(chosen_variable, chosen_variable_lab, df_scores)
-    blank_lines(1)
+    # Add topic description
+    topic_name = chosen_variable_lab.lower()
+    topic_descrip = description[f'{chosen_variable}_score'].lower().lstrip()
+    st.markdown(f'''
+**Results:**
 
-    # Section header and description
-    write_response_section_intro(chosen_variable_lab, type='public')
+The questions below relate to the topic of '**{topic_name}**'. This topic is
+about **{topic_descrip}**.''')
 
     # Get dataframe with results for the chosen variable and group
     chosen_result = get_chosen_result(
