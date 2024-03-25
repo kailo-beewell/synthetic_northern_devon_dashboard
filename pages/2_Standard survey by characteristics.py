@@ -1,6 +1,6 @@
 from kailo_beewell_dashboard.explore_results import (
+    choose_topic,
     create_bar_charts,
-    create_topic_dict,
     get_chosen_result,
     write_response_section_intro,
     write_topic_intro)
@@ -17,35 +17,15 @@ df_scores = pd.read_csv(
 df_prop = pd.read_csv(
     'data/survey_data/standard_nd_aggregate_responses.csv')
 
-##################
-# Getting topics #
-##################
-
-# DUPLICATION WITH STANDARD SURVEY, PUBLIC BY AREA, PUBLIC BY CHARACTERISTIC
-# Create dictionary of topics
-topic_dict = create_topic_dict(df_scores)
-
-# If session state doesn't contain chosen variable, default to Autonomy
-# If it does (i.e. set from Summary page), use that
-if 'chosen_variable_lab' not in st.session_state:
-    st.session_state['chosen_variable_lab'] = 'Autonomy'
-
-# Convert topics to list and find index of the session state variable
-topic_list = list(topic_dict.keys())
-default = topic_list.index(st.session_state['chosen_variable_lab'])
-
 #####################
 # Page introduction #
 #####################
 
 st.title('Standard survey results by characteristics')
 
-# Select topic
-chosen_variable_lab = st.selectbox(
-    '**Topic:**', topic_dict.keys(), index=default)
-
-# Convert from variable_lab to variable
-chosen_variable = topic_dict[chosen_variable_lab]
+# Create selectbox to get chosen topic, and set default as Autonomy
+chosen_variable_lab, chosen_variable = choose_topic(
+    df_scores, include_raw_name=True)
 
 # Select pupils to view results for
 chosen_group = st.selectbox(
