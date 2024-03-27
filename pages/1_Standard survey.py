@@ -10,6 +10,7 @@ from kailo_beewell_dashboard.reuse_text import caution_comparing
 from kailo_beewell_dashboard.score_descriptions import score_descriptions
 import numpy as np
 import pandas as pd
+import pickle
 import plotly.express as px
 import streamlit as st
 
@@ -28,6 +29,9 @@ if 'geojson_nd' not in st.session_state:
     f = open('data/area_data/geojson/combined_nd.geojson')
     st.session_state.geojson_nd = json.load(f)
 
+# Import data
+with open('data/survey_data/nd_overall_counts.pkl', 'rb') as f:
+    school_counts = pickle.load(f)
 df_prop = pd.read_csv('data/survey_data/standard_nd_aggregate_responses.csv')
 
 # As we play around this one, import it from session state
@@ -62,9 +66,11 @@ elif st.session_state.standard_page == 'char':
     btn_char_txt = '**By pupil characteristics**'
 
 st.divider()
-st.markdown('''
-The standard #BeeWell survey was completed by **N** pupils in Years 8 and
-10 at **N** mainstream schools. You can view results either:''')
+st.markdown(f'''
+The standard #BeeWell survey was completed by
+{school_counts['standard_pupils']} pupils in Years 8 and 10 at
+{school_counts['standard_schools']} mainstream schools. You can view results
+either:''')
 cols = st.columns(2)
 with cols[0]:
     if st.button(btn_area_txt, key='btn_area', use_container_width=True):
@@ -114,7 +120,8 @@ This topic is about **{topic_descrip}**, with higher scores
 indicating {score_descriptions[chosen_variable1][1]}.''')
 
     # Filter to chosen topic then filter to only used column (helps map speed)
-    chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab1]
+    chosen_result = df_scores[
+        df_scores['variable_lab'] == chosen_variable_lab1]
     msoa_rag = chosen_result[['msoa', 'rag']].copy()
     msoa_rag['rag'] = msoa_rag['rag'].map({
         'below': 'Below average',

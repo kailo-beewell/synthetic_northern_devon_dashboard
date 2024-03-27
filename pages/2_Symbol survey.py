@@ -4,19 +4,23 @@ from kailo_beewell_dashboard.explore_results import (
 from kailo_beewell_dashboard.page_setup import (
     blank_lines, page_footer, page_setup)
 import pandas as pd
+import pickle
 import streamlit as st
 
 page_setup('public')
 
+# Import data
+with open('data/survey_data/nd_overall_counts.pkl', 'rb') as f:
+    school_counts = pickle.load(f)
 df_prop = pd.read_csv('data/survey_data/symbol_nd_aggregate_responses.csv')
 
 # Title and introduction
 st.title('Symbol #BeeWell Survey')
-st.markdown('''
-The symbol #BeeWell survey was completed by **N** pupils Years 7 to 11 at
-**N** non-mainstream schools. On this page, you can see how young people from
-across Northern Devon responded to each of the questions in the survey. You can
-view results:
+st.markdown(f'''
+The symbol #BeeWell survey was completed by {school_counts['symbol_pupils']}
+pupils Years 7 to 11 at {school_counts['symbol_schools']} non-mainstream
+schools. On this page, you can see how young people from across Northern Devon
+responded to each of the questions in the survey. You can view results:
 * For all pupils
 * By year group
 * By gender

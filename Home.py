@@ -1,9 +1,14 @@
 from kailo_beewell_dashboard.images import get_image_path
 from kailo_beewell_dashboard.page_setup import (
     blank_lines, page_footer, page_setup)
+import pickle
 import streamlit as st
 
 page_setup('public')
+
+# Import data
+with open('data/survey_data/nd_overall_counts.pkl', 'rb') as f:
+    school_counts = pickle.load(f)
 
 # Title and sub-title
 st.title('The #BeeWell Survey')
@@ -18,13 +23,15 @@ st.image(get_image_path('home_image_3_transparent.png'),
          use_column_width=True)
 
 # Introduction
-st.markdown('''In the academic year 2023-24, **N** pupils from **N** schools
-across North Devon and Torridge took part in the #BeeWell survey delivered by
-Kailo. There were two versions of the survey:
-* Standard #BeeWell survey - completed by **N** pupils in Years 8 and 10 at
-**N** mainstream schools
-* Symbol #BeeWell survey - completed by **N** pupils Years 7 to 11 at **N**
-non-mainstream schools''')
+st.markdown(f'''In the academic year 2023-24, {school_counts['total_pupils']}
+pupils from {school_counts['total_schools']} schools across North Devon and
+Torridge took part in the #BeeWell survey delivered by Kailo. There were
+two versions of the survey:
+* Standard #BeeWell survey - completed by {school_counts['standard_pupils']}
+pupils in Years 8 and 10 at {school_counts['standard_schools']} mainstream
+schools
+* Symbol #BeeWell survey - completed by {school_counts['symbol_pupils']} pupils
+Years 7 to 11 at {school_counts['symbol_schools']} non-mainstream schools''')
 
 blank_lines(2)
 
