@@ -11,6 +11,7 @@ page_setup('public')
 # Import data
 with open('data/survey_data/nd_overall_counts.pkl', 'rb') as f:
     school_counts = pickle.load(f)
+sta_dem = pd.read_csv('data/survey_data/standard_nd_aggregate_demographic.csv')
 sym_dem = pd.read_csv('data/survey_data/symbol_nd_aggregate_demographic.csv')
 
 st.title('Who took part?')
@@ -49,6 +50,15 @@ The standard #BeeWell survey was completed by
 {school_counts['standard_pupils']} pupils in Years 8 and 10 at
 {school_counts['standard_schools']} mainstream schools. This page describes the
 sample of young people who completed the standard survey.''')
+    # Create the figures (with their titles and descriptions)
+    sta_dem['site'] = 'Northern Devon'
+    demographic_plots(
+        dem_prop=sta_dem,
+        chosen_school=None,
+        chosen_group=None,
+        group_lab='site',
+        survey_type='standard',
+        dashboard_type='area')
 
 
 if st.session_state.sample_page == 'sym':
@@ -59,7 +69,6 @@ The symbol #BeeWell survey was completed by {school_counts['symbol_pupils']}
 pupils Years 7 to 11 at {school_counts['symbol_schools']} non-mainstream
 schools. This page describes the sample of young people who completed the
 symbol survey.''')
-
     # Create the figures (with their titles and descriptions)
     sym_dem['plot_group'] = sym_dem['measure']
     sym_dem['site'] = 'Northern Devon'
