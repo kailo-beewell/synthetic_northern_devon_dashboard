@@ -1,0 +1,7 @@
+cat,cat_lab,count,percentage,measure,n_responses,measure_lab
+"[0, 1, nan]","['Male', 'Female', 'No data']","[18, 32, 10]","[30.0, 53.333333333333336, 16.666666666666664]",gender,60.0,Gender
+"[7, 8, 9, 10, 11, nan]","['Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'No data']","[nan, 5, 17, 13, 11, nan]","[nan, 8.333333333333332, 28.333333333333332, 21.666666666666668, 18.333333333333332, nan]",year_group,46.0,Year group
+"[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[27, 33, 0]","[45.0, 55.00000000000001, 0.0]",fsm,60.0,Free school meals
+"[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[23, 29, 8]","[38.333333333333336, 48.333333333333336, 13.333333333333334]",sen,60.0,Special educational needs
+"[1, 2, nan]","['Ethnic minority', 'White British', 'No data']","[30, 23, 7]","[50.0, 38.333333333333336, 11.666666666666666]",ethnicity,60.0,Ethnicity
+"[0, 1, nan]","['No', 'Yes', 'No data']","[23, 32, 5]","[38.333333333333336, 53.333333333333336, 8.333333333333332]",english_additional,60.0,English as an additional language
