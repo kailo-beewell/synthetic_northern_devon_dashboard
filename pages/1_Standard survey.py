@@ -1,6 +1,5 @@
 import json
 from kailo_beewell_dashboard.explore_results import (
-    choose_topic,
     create_bar_charts,
     create_topic_dict,
     get_chosen_result)
@@ -34,8 +33,9 @@ df_prop = pd.read_csv('data/survey_data/standard_nd_aggregate_responses.csv')
 # As we play around this one, import it from session state
 df_scores = st.session_state.scores_rag
 
-# Create topic dictionary
+# Create topic dictionary and convert to list. Get index of autonomy (default).
 topic_dict = create_topic_dict(df_scores)
+topic_list = list(topic_dict.keys())
 
 # Create dictionary where key is topic name and value is topic description
 # (Duplication with explore_results.write_topic_intro())
@@ -56,10 +56,10 @@ if 'standard_page' not in st.session_state:
 # Set button text weight depending on current choice
 if st.session_state.standard_page == 'area':
     btn_area_txt = '**By area**'
-    btn_char_txt = 'By characteristic'
+    btn_char_txt = 'By pupil characteristics'
 elif st.session_state.standard_page == 'char':
     btn_area_txt = 'By area'
-    btn_char_txt = '**By characteristic**'
+    btn_char_txt = '**By pupil characteristics**'
 
 st.divider()
 st.markdown('''
@@ -83,14 +83,13 @@ blank_lines(2)
 
 if st.session_state.standard_page == 'area':
     st.subheader('Results by area')
-    st.markdown(f'''
+    st.markdown('''
 **Introduction:**
 
-There were {len(topic_dict)} topics in the standard #BeeWell survey, each
-composed of one or several items. In this section, an overall score has been
-calculated for each topic, allowing you to compare scores between different
-areas of Northern Devon. These are based just on responses from young people
-who completed all of the questions for a given topic.
+In this section, an overall score has been calculated for each topic, allowing
+you to compare scores between different areas of Northern Devon. These scores
+are based just on responses from young people who completed all of the
+questions for a given topic.
 
 Results are presented by Middle Layer Super Output Area (MSOA). These are
 geographic areas that were designed to improve reporting of small area
@@ -102,19 +101,20 @@ statistics.''')
     rag_guide()
 
     # Create selectbox to get chosen topic
-    chosen_variable_lab, chosen_variable = choose_topic(
-        df_scores, include_raw_name=True)
+    chosen_variable_lab1 = st.selectbox(
+        label='**Topic:**', options=topic_dict.keys(), key='topic_map')
+    chosen_variable1 = topic_dict[chosen_variable_lab1]
 
     # Add topic description
-    topic_name = chosen_variable_lab.lower()
-    topic_descrip = description[f'{chosen_variable}_score'].lower().lstrip()
+    topic_name = chosen_variable_lab1.lower()
+    topic_descrip = description[f'{chosen_variable1}_score'].lower().lstrip()
     st.markdown(f'''
 This map is based on overall scores for the topic of '{topic_name}'.
 This topic is about **{topic_descrip}**, with higher scores
-indicating {score_descriptions[chosen_variable][1]}.''')
+indicating {score_descriptions[chosen_variable1][1]}.''')
 
     # Filter to chosen topic then filter to only used column (helps map speed)
-    chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab]
+    chosen_result = df_scores[df_scores['variable_lab'] == chosen_variable_lab1]
     msoa_rag = chosen_result[['msoa', 'rag']].copy()
     msoa_rag['rag'] = msoa_rag['rag'].map({
         'below': 'Below average',
@@ -157,8 +157,8 @@ indicating {score_descriptions[chosen_variable][1]}.''')
 # Results by characteristic #
 #############################
 
-if st.session_state.standard_page == 'char':
-    st.subheader('Results by characteristics')
+elif st.session_state.standard_page == 'char':
+    st.subheader('Results by pupil characteristics')
     st.markdown('''
 **Introduction:**
 
@@ -171,8 +171,9 @@ responded to each of the questions in the survey. You can view results:
 * By whether pupils have special educational needs (SEN)''')
 
     # Create selectbox to get chosen topic
-    chosen_variable_lab, chosen_variable = choose_topic(
-        df_scores, include_raw_name=True)
+    chosen_variable_lab2 = st.selectbox(
+        label='**Topic:**', options=topic_dict.keys(), key='topic_bar')
+    chosen_variable2 = topic_dict[chosen_variable_lab2]
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
@@ -181,8 +182,8 @@ responded to each of the questions in the survey. You can view results:
     blank_lines(2)
 
     # Add topic description
-    topic_name = chosen_variable_lab.lower()
-    topic_descrip = description[f'{chosen_variable}_score'].lower().lstrip()
+    topic_name = chosen_variable_lab2.lower()
+    topic_descrip = description[f'{chosen_variable2}_score'].lower().lstrip()
     st.markdown(f'''
 **Results:**
 
@@ -191,13 +192,13 @@ about **{topic_descrip}**.''')
 
     # Get dataframe with results for the chosen variable and group
     chosen_result = get_chosen_result(
-        chosen_variable=chosen_variable,
+        chosen_variable=chosen_variable2,
         chosen_group=chosen_group,
         df=df_prop,
         school=None,
         survey_type='standard')
 
     # Produce bar charts w/ accompanying chart section descriptions and titles
-    create_bar_charts(chosen_variable, chosen_result)
+    create_bar_charts(chosen_variable2, chosen_result)
 
 page_footer('schools in Northern Devon')
