@@ -1,0 +1,18 @@
+cat,cat_lab,count,percentage,measure,n_responses,plot_group,measure_lab
+"[1, 2, 3, 4, 5, 6, nan]","['Girl', 'Boy', 'Non-binary', 'I describe myself in another way', 'Currently unsure', 'Prefer not to say', 'No response']","[111, 142, 101, 125, 122, 118, 81]","[13.875000000000002, 17.75, 12.625, 15.625, 15.25, 14.75, 10.125]",gender,800,gender,Gender
+"[1, 2, 3, 4, 5, nan]","['Yes', 'No', 'Prefer not to say', 'I describe myself in another way', 'Not sure', 'No response']","[152, 149, 146, 138, 129, 86]","[19.0, 18.625, 18.25, 17.25, 16.125, 10.75]",transgender,800,gender,Do you consider yourself to be transgender?
+"[1, 2, 3, 4, 5, 6, nan]","['Bi/pansexual', 'Gay/lesbian', 'Heterosexual/straight', 'I describe myself in another way', 'Currently unsure', 'Prefer not to say', 'No response']","[121, 139, 130, 143, 133, 131, 3]","[15.125, 17.375, 16.25, 17.875, 16.625, 16.375, 0.375]",sexual_orientation,800,sexual_orientation,Sexual orientation
+"[1, 2, 3, nan]","['Yes', 'No', 'Unsure', 'No response']","[248, 197, 261, 94]","[31.0, 24.625, 32.625, 11.75]",neurodivergent,800,neuro,Do you identify as neurodivergent?
+"[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[249, 267, 249, 35]","[31.125000000000004, 33.375, 31.125000000000004, 4.375]",birth_parent1,800,birth,Was birth parent 1 born outside the UK?
+"[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[276, 259, 234, 31]","[34.5, 32.375, 29.25, 3.875]",birth_parent2,800,birth,Was birth parent 2 born outside the UK?
+"[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[234, 278, 260, 28]","[29.25, 34.75, 32.5, 3.5000000000000004]",birth_you,800,birth,Were you born outside the UK?
+"[0, 1, nan]","['No', 'Yes', 'No response']","[377, 389, 34]","[47.125, 48.625, 4.25]",young_carer,800,young_carer,"In the last year, have you regularly taken on caring
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[249, 217, 245, 89]","[31.125000000000004, 27.125, 30.625000000000004, 11.125]",care_experience,800,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
+"[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[416, 312, 72]","[52.0, 39.0, 9.0]",year_group,800,year_group,Year group
+"[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[330, 379, 91]","[41.25, 47.375, 11.375]",fsm,800,fsm,Free school meals
+"[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[446, 314, 40]","[55.75, 39.25, 5.0]",sen,800,neuro,Special educational needs
+"[1, 2, nan]","['Ethnic minority', 'White British', 'No data']","[383, 390, 27]","[47.875, 48.75, 3.375]",ethnicity,800,ethnicity,Ethnicity
+"[0, 1, nan]","['No', 'Yes', 'No data']","[348, 369, 83]","[43.5, 46.125, 10.375]",english_additional,800,english_additional,English as an additional language
