@@ -9,9 +9,9 @@ This should align with releases on GitHub (which will create and link to once ha
 
 Writing of this changelog will be supported by comparison of main and forked repositories on GitHub, and from [changelog of the kailo_beewell_dashboard package](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/blob/main/CHANGELOG.md).
 
-## Unreleased
+## 0.1.0
 
-**Release date:** tbc
+**Release date:** 9th April 2024
 
 **Contributors:** Amy Heather
 
@@ -19,4 +19,8 @@ First stable forked release of the synthetic Northern Devon dashboard, using kai
 
 ### Added
 
-* tbc
+* Home page (but doesn't have static PDF download option)
+* About page
+* Standard survey page (by area or characteristic)
+* Symbol survey page (by characteristic)
+* Who took part page (standard or symbol)
