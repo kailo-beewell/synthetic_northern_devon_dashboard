@@ -5,6 +5,10 @@
 
 Dashboard with results from across Northern Devon from the #BeeWell survey in 2023/24. 🌳
 
+View the dashboard:
+* [Stable version of dashboard](https://synthetic-beewell-kailo-public-dashboard.streamlit.app/)
+* [Development version of dashboard](https://dev-synthetic-beewell-kailo-public-dashboard.streamlit.app/)
+
 This is created using completely random synthetic data. This repository is public and contains no project data.
 
 This app is created using the package `kailo-beewell-dashboard`. See:
