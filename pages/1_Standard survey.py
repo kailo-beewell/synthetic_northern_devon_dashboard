@@ -1,28 +1,47 @@
+import streamlit as st
 import json
+import pickle
+import numpy as np
+import pandas as pd
+import plotly.express as px
 from kailo_beewell_dashboard.explore_results import (
     create_bar_charts,
     create_topic_dict,
     get_chosen_result,
 )
 from kailo_beewell_dashboard.map import rag_guide
-from kailo_beewell_dashboard.page_setup import blank_lines, page_footer, page_setup
+from kailo_beewell_dashboard.page_setup import blank_lines, page_footer
 from kailo_beewell_dashboard.reuse_text import caution_comparing
 from kailo_beewell_dashboard.score_descriptions import score_descriptions
-import numpy as np
-import pandas as pd
-import pickle
-import plotly.express as px
-import streamlit as st
 
-##########
-# Set-up #
-##########
+
+# Set page configuration
+def page_setup(type):
+    """
+    Set up page to standard conditions, with layout as specified
+
+    Parameters
+    ----------
+    type : string
+        Survey type - 'standard', 'symbol', or 'public'
+    """
+    # Set up streamlit page parameters
+    st.set_page_config(
+        page_title="#BeeWell School Dashboard",
+        page_icon="🐝",
+        initial_sidebar_state="expanded",
+        layout="centered",
+        menu_items={
+            "About": f"""
+{type.capitalize()} #BeeWell survey dashboard for North Devon and Torridge in
+2023/24 as part of Kailo."""
+        },
+    )
 
 
 def render_area_tab_markup():
     st.subheader("Results by area")
     st.markdown("""
-
     **Introduction:**
 
     In this section, an overall score has been calculated for each topic, allowing
@@ -80,7 +99,7 @@ def render_area_tab_markup():
             "n<10": "#F6FAFF",
         },
         opacity=0.75,
-        # Base map stryle
+        # Base map style
         mapbox_style="carto-positron",
         # Positioning of map on load
         center={"lat": 50.955, "lon": -4.1},
@@ -152,7 +171,38 @@ def render_msoa_markup():
     st.markdown("""
 **Introduction:**
 
-In this section, you can see survey results by topic across the different Middle Super Output Areas (MSOAs) in Northern Devon.""")
+In this section, you can see survey results for each topic within individual Middle Layer Super Output Areas (MSOAs) in Northern Devon. MSOAs are geographic areas designed to improve the reporting of small area statistics. An overall score has been calculated for each topic, allowing you to compare scores within a specific area across different topics. These scores are based solely on responses from young people who completed all the questions for a given topic. By clicking on an MSOA on the map, you can view the RAG (Red, Amber, Green) rating for each topic in that area.""")
+
+    st.markdown("**Guide to the map:**")
+    rag_guide()
+
+    # Create map for MSOA and topic
+    chosen_msoa = st.selectbox(
+        "**Select MSOA:**", df_scores["msoa"].unique(), key="msoa_select"
+    )
+    msoa_data = df_scores[df_scores["msoa"] == chosen_msoa]
+
+    fig = px.bar(
+        msoa_data,
+        x="variable_lab",
+        y="value",
+        color="rag",
+        labels={"variable_lab": "Topic", "value": "Score", "rag": "RAG Rating"},
+        color_discrete_map={
+            "Below average": "#FFB3B3",
+            "Average": "#FFDFA6",
+            "Above average": "#7DD27D",
+            "n<10": "#F6FAFF",
+        },
+    )
+
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    st.plotly_chart(fig)
+    blank_lines(1)
+
+    # Add caveat for interpretation
+    st.markdown("**Interpreting results:**")
+    st.markdown(caution_comparing("msoa"))
 
 
 page_setup("public")
@@ -191,14 +241,11 @@ description = (
 # Page title and introduction
 st.title("Standard #BeeWell survey")
 
-# Introduction and choose page
-
 # Set default page
 if "standard_page" not in st.session_state:
     st.session_state.standard_page = "area"
 
 # Set button text weight depending on current choice
-# Determine button labels based on the session state
 btn_area_label = (
     "**By area**" if st.session_state.get("standard_page") == "area" else "By area"
 )
@@ -213,40 +260,30 @@ msoa_button_label = (
 
 st.divider()
 st.markdown(f"""
-The standard #BeeWell survey was completed by
-{school_counts['standard_pupils']} pupils in Years 8 and 10 at
-{school_counts['standard_schools']} mainstream schools. You can view results
-either:""")
-
+The standard #BeeWell survey was completed by {school_counts['standard_pupils']} pupils in Years 8 and 10 at {school_counts['standard_schools']} mainstream schools. You can view results either:""")
 
 cols = st.columns(3)
 with cols[0]:
     if st.button(btn_area_label, key="btn_area", use_container_width=True):
         st.session_state.standard_page = "area"
-        st.rerun()
+        st.experimental_rerun()
 with cols[1]:
     if st.button(btn_char_label, key="btn_char", use_container_width=True):
         st.session_state.standard_page = "char"
-        st.rerun()
+        st.experimental_rerun()
 with cols[2]:
     if st.button(msoa_button_label, key="btn_msoa", use_container_width=True):
         st.session_state.standard_page = "msoa"
-        st.rerun()
+        st.experimental_rerun()
 st.divider()
 blank_lines(2)
 
-###################
-# Results by area #
-###################
-
+# Render the selected tab
 if st.session_state.standard_page == "area":
     render_area_tab_markup()
-
 elif st.session_state.standard_page == "char":
     render_characteristic_tab_markup()
-
 elif st.session_state.standard_page == "msoa":
     render_msoa_markup()
-
 
 page_footer("schools in Northern Devon")
