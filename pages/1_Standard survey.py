@@ -1,3 +1,5 @@
+from typing import Literal, Optional
+
 import streamlit as st
 import json
 import pickle
@@ -10,33 +12,79 @@ from kailo_beewell_dashboard.explore_results import (
     get_chosen_result,
 )
 from kailo_beewell_dashboard.map import rag_guide
-from kailo_beewell_dashboard.page_setup import blank_lines, page_footer
+from kailo_beewell_dashboard.page_setup import page_setup, blank_lines, page_footer
 from kailo_beewell_dashboard.reuse_text import caution_comparing
 from kailo_beewell_dashboard.score_descriptions import score_descriptions
 
 
-# Set page configuration
-def page_setup(type):
-    """
-    Set up page to standard conditions, with layout as specified
+def create_rag_container(
+    rag_text: str, bg_colour: str, font_colour: str, output: str = "streamlit"
+):
+    if output == "streamlit":
+        st.markdown(
+            f'<div style="background-color:{bg_colour};color:{font_colour};padding:10px;border-radius:5px;text-align:center;">{rag_text}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        # Implement other output formats if needed
+        pass
 
-    Parameters
-    ----------
-    type : string
-        Survey type - 'standard', 'symbol', or 'public'
+
+def display_rag_dict(rag_dict: list[dict]):
+    for entry in rag_dict:
+        variable_lab = entry["variable_lab"]
+        rag_info = entry["rag"]
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.write(variable_lab)
+
+        with col2:
+            create_rag_container(
+                rag_info["rag_text"],
+                rag_info["bg_colour"],
+                rag_info["font_colour"],
+                output="streamlit",
+            )
+
+
+def rag_for_msoas(dataframe: pd.DataFrame, msoa_name: str) -> list[dict]:
     """
-    # Set up streamlit page parameters
-    st.set_page_config(
-        page_title="#BeeWell School Dashboard",
-        page_icon="🐝",
-        initial_sidebar_state="expanded",
-        layout="centered",
-        menu_items={
-            "About": f"""
-{type.capitalize()} #BeeWell survey dashboard for North Devon and Torridge in
-2023/24 as part of Kailo."""
-        },
-    )
+    Filters the dataframe to only include rows which match the MSOA_Name as supplied as an argument.
+    Keeps only the columns we need and returns them as list of dictionaries.
+    """
+    df = dataframe.copy(deep=True)
+    # Keep the following columns:
+    df = df[["variable", "msoa", "variable_lab", "rag", "count"]]
+    # Filter the dataframe to only keep rows where the 'msoa' column matches the msoa_name
+    df = df[df["msoa"] == msoa_name]
+    result = df.to_dict(orient="records")
+    return result
+
+
+def get_rag_colour_scheme(rag: Optional[Literal["average", "above", "below"]]) -> dict:
+    """
+    We should be using this in the result-box function in the summary_rag.py
+    """
+    if rag == "below":
+        return {
+            "rag_text": "Below average",
+            "bg_colour": "#FFCCCC",
+            "font_colour": "#95444B",
+        }
+    elif rag == "average":
+        return {"rag_text": "Average", "bg_colour": "#FFE8BF", "font_colour": "#AA7A18"}
+    elif rag == "above":
+        return {
+            "rag_text": "Above average",
+            "bg_colour": "#B6E6B6",
+            "font_colour": "#2B7C47",
+        }
+    elif pd.isnull(rag):
+        return {"rag_text": "n < 10", "bg_colour": "#DCE4FF", "font_colour": "#19539A"}
+    else:
+        raise ValueError(f"Unknown rag value: {rag}")
 
 
 def render_area_tab_markup():
@@ -139,7 +187,6 @@ responded to each of the questions in the survey. You can view results:
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
-        "**View results:**",
         ["For all pupils", "By year group", "By gender", "By FSM", "By SEN"],
     )
     blank_lines(2)
@@ -171,38 +218,69 @@ def render_msoa_markup():
     st.markdown("""
 **Introduction:**
 
-In this section, you can see survey results for each topic within individual Middle Layer Super Output Areas (MSOAs) in Northern Devon. MSOAs are geographic areas designed to improve the reporting of small area statistics. An overall score has been calculated for each topic, allowing you to compare scores within a specific area across different topics. These scores are based solely on responses from young people who completed all the questions for a given topic. By clicking on an MSOA on the map, you can view the RAG (Red, Amber, Green) rating for each topic in that area.""")
+In this section, you can see survey results for each topic within individual Middle Layer Super Output Areas (MSOAs) in Northern Devon. MSOAs are geographic areas designed to improve the reporting of small area statistics. An overall score has been calculated for each topic, allowing you to compare scores within a specific area across different topics. These scores are based solely on responses from young people who completed all the questions for a given topic. """)
 
+    # RAG guide
     st.markdown("**Guide to the map:**")
     rag_guide()
 
-    # Create map for MSOA and topic
-    chosen_msoa = st.selectbox(
-        "**Select MSOA:**", df_scores["msoa"].unique(), key="msoa_select"
-    )
-    msoa_data = df_scores[df_scores["msoa"] == chosen_msoa]
-
-    fig = px.bar(
-        msoa_data,
-        x="variable_lab",
-        y="value",
-        color="rag",
-        labels={"variable_lab": "Topic", "value": "Score", "rag": "RAG Rating"},
-        color_discrete_map={
-            "Below average": "#FFB3B3",
-            "Average": "#FFDFA6",
-            "Above average": "#7DD27D",
-            "n<10": "#F6FAFF",
-        },
+    st.markdown("**Explore results**")
+    st.markdown(
+        "Choose an MSOA from the drop-down menu to see a summary of results by topic for that area. You can hover over the MSOAs on the map to see their names."
     )
 
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-    st.plotly_chart(fig)
-    blank_lines(1)
+    # Create a two-column layout
+    select_and_map_cols = st.columns(2)
+
+    # Put the select box in the first column
+    with select_and_map_cols[0]:
+        selected_msoa = st.selectbox(
+            "Select MSOA:", st.session_state.msoa_df["msoa"].unique()
+        )
+
+    # Map in the second column
+    with select_and_map_cols[1]:
+        fig = px.choropleth_mapbox(
+            st.session_state.msoa_df,
+            geojson=st.session_state.geojson_nd,
+            locations="msoa",
+            featureidkey="properties.MSOA11NM",
+            # Single colour for all areas
+            color_discrete_sequence=["#B0B0B0"],  # Light grey colour
+            opacity=0.75,
+            # Base map style
+            mapbox_style="carto-positron",
+            # Positioning of map on load
+            center={"lat": 50.955, "lon": -4.1},
+            zoom=7.8,
+            labels={"rag": "Result"},
+        )
+
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        st.plotly_chart(fig)
+
+    # Import data
+
+    # Display detailed information for the selected MSOA
+    st.subheader(f"Summary of Topics for {selected_msoa}")
+    # selected_data = msoa_data[msoa_data["msoa"] == selected_msoa]
+
+    # Map (either a static one for reference, or ) to be created here
 
     # Add caveat for interpretation
-    st.markdown("**Interpreting results:**")
-    st.markdown(caution_comparing("msoa"))
+    st.markdown("**Comparing between areas:**")
+    st.markdown(caution_comparing("area"))
+
+    rag_df = pd.read_csv("data/survey_data/standard_area_aggregate_scores_rag.csv")
+
+    rag_dict = rag_for_msoas(rag_df, selected_msoa)
+
+    # Replace the RAG keys with our nice data structure which contains the button text, text colour and
+    # the background colour
+    for dict in rag_dict:
+        dict["rag"] = get_rag_colour_scheme(dict["rag"])
+
+    display_rag_dict(rag_dict)
 
 
 page_setup("public")
@@ -216,6 +294,11 @@ if "scores_rag" not in st.session_state:
 if "geojson_nd" not in st.session_state:
     f = open("data/area_data/geojson/combined_nd.geojson")
     st.session_state.geojson_nd = json.load(f)
+if "msoa_df" not in st.session_state:
+    st.session_state.msoa_df = pd.read_csv(
+        "data/survey_data/standard_area_aggregate_scores_rag.csv"
+    )
+
 
 # Import data
 with open("data/survey_data/nd_overall_counts.pkl", "rb") as f:
@@ -268,13 +351,14 @@ with cols[0]:
         st.session_state.standard_page = "area"
         st.experimental_rerun()
 with cols[1]:
-    if st.button(btn_char_label, key="btn_char", use_container_width=True):
-        st.session_state.standard_page = "char"
-        st.experimental_rerun()
-with cols[2]:
     if st.button(msoa_button_label, key="btn_msoa", use_container_width=True):
         st.session_state.standard_page = "msoa"
         st.experimental_rerun()
+with cols[2]:
+    if st.button(btn_char_label, key="btn_char", use_container_width=True):
+        st.session_state.standard_page = "char"
+        st.experimental_rerun()
+
 st.divider()
 blank_lines(2)
 
@@ -287,3 +371,6 @@ elif st.session_state.standard_page == "msoa":
     render_msoa_markup()
 
 page_footer("schools in Northern Devon")
+
+
+# def show_msoa_topic_summary(msoa: str, msoa_agg_rag_dict: dict):
