@@ -55,10 +55,11 @@ def rag_for_msoas(dataframe: pd.DataFrame, msoa_name: str) -> list[dict]:
     Keeps only the columns we need and returns them as list of dictionaries.
     """
     df = dataframe.copy(deep=True)
-    # Keep the following columns:
+    # Keep the following columns (this may need to be changed to fix the n<10 issue):
     df = df[["variable", "msoa", "variable_lab", "rag", "count"]]
     # Filter the dataframe to only keep rows where the 'msoa' column matches the msoa_name
     df = df[df["msoa"] == msoa_name]
+    # List like [{column -> value}, ... , {column -> value}]
     result = df.to_dict(orient="records")
     return result
 
@@ -88,7 +89,7 @@ def get_rag_colour_scheme(rag: Optional[Literal["average", "above", "below"]]) -
 
 
 def render_area_tab_markup():
-    st.subheader("Results by area")
+    st.subheader("Results by topic and area")
     st.markdown("""
     **Introduction:**
 
@@ -187,7 +188,8 @@ responded to each of the questions in the survey. You can view results:
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
-        ["For all pupils", "By year group", "By gender", "By FSM", "By SEN"],
+        label="**Choose a group**:",
+        options=["For all pupils", "By year group", "By gender", "By FSM", "By SEN"],
     )
     blank_lines(2)
 
@@ -214,7 +216,7 @@ about **{topic_descrip}**.""")
 
 
 def render_msoa_markup():
-    st.subheader("Results by MSOA and topic")
+    st.subheader("Results by MSOA and all topics")
     st.markdown("""
 **Introduction:**
 
@@ -262,25 +264,25 @@ In this section, you can see survey results for each topic within individual Mid
     # Import data
 
     # Display detailed information for the selected MSOA
-    st.subheader(f"Summary of Topics for {selected_msoa}")
+    st.subheader(f"Summary of topics for {selected_msoa}")
+
     # selected_data = msoa_data[msoa_data["msoa"] == selected_msoa]
-
-    # Map (either a static one for reference, or ) to be created here
-
-    # Add caveat for interpretation
-    st.markdown("**Comparing between areas:**")
-    st.markdown(caution_comparing("area"))
-
     rag_df = pd.read_csv("data/survey_data/standard_area_aggregate_scores_rag.csv")
 
     rag_dict = rag_for_msoas(rag_df, selected_msoa)
 
-    # Replace the RAG keys with our nice data structure which contains the button text, text colour and
+    # Replace the RAG keys with our data structure which contains the button text, text colour and
     # the background colour
     for dict in rag_dict:
         dict["rag"] = get_rag_colour_scheme(dict["rag"])
 
     display_rag_dict(rag_dict)
+
+    blank_lines(1)
+
+    # Add caveat for interpretation
+    st.markdown("**Comparing between areas:**")
+    st.markdown(caution_comparing("area"))
 
 
 page_setup("public")
@@ -330,7 +332,9 @@ if "standard_page" not in st.session_state:
 
 # Set button text weight depending on current choice
 btn_area_label = (
-    "**By area**" if st.session_state.get("standard_page") == "area" else "By area"
+    "**By topic and area**"
+    if st.session_state.get("standard_page") == "area"
+    else "By area"
 )
 btn_char_label = (
     "**By pupil characteristics**"
@@ -338,7 +342,9 @@ btn_char_label = (
     else "By pupil characteristics"
 )
 msoa_button_label = (
-    "**By MSOA**" if st.session_state.get("standard_page") == "msoa" else "By MSOA"
+    "**Summary of all topics by MSOA**"
+    if st.session_state.get("standard_page") == "msoa"
+    else "By MSOA"
 )
 
 st.divider()
