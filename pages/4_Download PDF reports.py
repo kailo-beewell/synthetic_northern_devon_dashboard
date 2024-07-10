@@ -8,6 +8,17 @@ import streamlit as st
 import weasyprint
 from tempfile import NamedTemporaryFile
 
+# Initialise the session state for report generation
+if "generating_standard_report" not in st.session_state:
+    st.session_state["generating_standard_report"] = False
+if "pdf_report_generated" not in st.session_state:
+    st.session_state["pdf_report_generated"] = False
+
+if "generating_symbol_report" not in st.session_state:
+    st.session_state["generating_symbol_report"] = False
+if "symbol_report_generated" not in st.session_state:
+    st.session_state["symbol_report_generated"] = False
+
 
 page_setup("public")
 
@@ -25,27 +36,6 @@ also provide the option of downloading a PDF version of the results below.""")
 
 # Create content for public standard survey
 def create_static_public_report(report_type):
-    """
-    Generate a static PDF report for the standard survey results
-
-    Parameters
-     ----------
-    chosen_school : string
-        Name of the chosen school
-    chosen_group : string
-        Name of the chosen group to view results by - options are
-        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
-    df_scores : dataframe
-        Dataframe with aggregate scores and RAG for each topic
-    df_prop : dataframe
-        Dataframe with proportion of each response to each survey question
-    counts : dataframe
-        Dataframe with the counts of pupils at each school
-    dem_prop : dataframe
-        Dataframe with proportion of each reponse to the demographic questions
-    pdf_title : string
-        Title for the PDF file
-    """
     content = []
     pdf_title = "Public Dashboard Report"
 
@@ -108,26 +98,14 @@ def generate_static_public_report(report_type):
             weasyprint.HTML(string=html_content).write_pdf(temp)
             temp.seek(0)
             st.session_state[f"pdf_report_{report_type}"] = open(temp.name, "rb")
+        st.session_state["generating_standard_report"] = (
+            False  # Reset state after generation
+        )
+        st.session_state["pdf_report_generated"] = True  # Mark report as generated
 
 
 # Create content for public symbol survey
 def create_static_symbol_report(report_type):
-    """
-    Generate a static PDF report for the symbol survey results
-
-    Parameters
-     ----------
-    chosen_school : string
-        Name of the chosen school
-    df_prop : dataframe
-        Dataframe with proportion of each response to each survey question
-    counts : dataframe
-        Dataframe with the counts of pupils at each school
-    dem_prop : dataframe
-        Dataframe with proportion of each reponse to the demographic questions
-    pdf_title : string
-        Title for the PDF file
-    """
     content = []
     pdf_title = "Symbol Survey Report"
 
@@ -190,42 +168,49 @@ def generate_static_symbol_report(report_type):
             weasyprint.HTML(string=html_content).write_pdf(temp)
             temp.seek(0)
             st.session_state[f"pdf_report_{report_type}"] = open(temp.name, "rb")
+        st.session_state["generating_symbol_report"] = (
+            False  # Reset state after generation
+        )
+        st.session_state["symbol_report_generated"] = True  # Mark report as generated
 
 
 st.markdown("""
 **The standard survey**""")
 
 # Button to generate standard survey report
-if "pdf_report_standard" not in st.session_state:
+if not st.session_state["pdf_report_generated"]:
     if st.button(
         "💡 Generate standard survey report - this will take around 30 seconds"
     ):
+        st.session_state["generating_standard_report"] = True
         generate_static_public_report("standard")
 
 # If report has been generated, show download button
-if "pdf_report_standard" in st.session_state:
+if st.session_state["pdf_report_generated"]:
     st.download_button(
         label="⬇️ Download standard survey report",
         data=st.session_state["pdf_report_standard"],
         file_name="kailo_beewell_school_report_standard.pdf",
         mime="application/pdf",
     )
-blank_lines(2)
 
 st.markdown("""
 **The symbol survey**""")
+
 # Button to generate symbol survey report
-if "pdf_report_symbol" not in st.session_state:
-    if st.button("Generate symbol survey report - this will take around 30 seconds"):
+if not st.session_state["symbol_report_generated"]:
+    if st.button("💡 Generate symbol survey report - this will take around 30 seconds"):
+        st.session_state["generating_symbol_report"] = True
         generate_static_symbol_report("symbol")
 
 # If report has been generated, show download button
-if "pdf_report_symbol" in st.session_state:
+if st.session_state["symbol_report_generated"]:
     st.download_button(
-        label="Download symbol survey report",
+        label="⬇️ Download symbol survey report",
         data=st.session_state["pdf_report_symbol"],
         file_name="kailo_beewell_school_report_symbol.pdf",
         mime="application/pdf",
     )
+
 
 page_footer("schools in Northern Devon")
