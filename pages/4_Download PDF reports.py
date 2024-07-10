@@ -7,9 +7,6 @@ from kailo_beewell_dashboard.static_report import (
 import streamlit as st
 import weasyprint
 from tempfile import NamedTemporaryFile
-import base64
-from importlib.resources import files
-import os
 
 
 page_setup("public")
@@ -195,25 +192,34 @@ def generate_static_symbol_report(report_type):
             st.session_state[f"pdf_report_{report_type}"] = open(temp.name, "rb")
 
 
+st.markdown("""
+**The standard survey**""")
+
 # Button to generate standard survey report
 if "pdf_report_standard" not in st.session_state:
-    if st.button("Generate standard survey report - this will take around 30 seconds"):
+    if st.button(
+        "💡 Generate standard survey report - this will take around 30 seconds"
+    ):
         generate_static_public_report("standard")
 
+# If report has been generated, show download button
+if "pdf_report_standard" in st.session_state:
+    st.download_button(
+        label="⬇️ Download standard survey report",
+        data=st.session_state["pdf_report_standard"],
+        file_name="kailo_beewell_school_report_standard.pdf",
+        mime="application/pdf",
+    )
+blank_lines(2)
+
+st.markdown("""
+**The symbol survey**""")
 # Button to generate symbol survey report
 if "pdf_report_symbol" not in st.session_state:
     if st.button("Generate symbol survey report - this will take around 30 seconds"):
         generate_static_symbol_report("symbol")
 
-# If report has been generated, show download buttons
-if "pdf_report_standard" in st.session_state:
-    st.download_button(
-        label="Download standard survey report",
-        data=st.session_state["pdf_report_standard"],
-        file_name="kailo_beewell_school_report_standard.pdf",
-        mime="application/pdf",
-    )
-
+# If report has been generated, show download button
 if "pdf_report_symbol" in st.session_state:
     st.download_button(
         label="Download symbol survey report",
