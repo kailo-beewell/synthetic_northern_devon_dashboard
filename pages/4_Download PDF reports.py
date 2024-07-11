@@ -9,16 +9,15 @@ import weasyprint
 from tempfile import NamedTemporaryFile
 
 # Initialise the session state for report generation
-if "generating_standard_report" not in st.session_state:
-    st.session_state["generating_standard_report"] = False
-if "pdf_report_generated" not in st.session_state:
-    st.session_state["pdf_report_generated"] = False
+if "pdf_report_standard" not in st.session_state:
+    st.session_state["pdf_report_standard"] = None
+if "pdf_report_standard_generated" not in st.session_state:
+    st.session_state["pdf_report_standard_generated"] = False
 
-if "generating_symbol_report" not in st.session_state:
-    st.session_state["generating_symbol_report"] = False
-if "symbol_report_generated" not in st.session_state:
-    st.session_state["symbol_report_generated"] = False
-
+if "pdf_report_symbol" not in st.session_state:
+    st.session_state["pdf_report_symbol"] = None
+if "pdf_report_symbol_generated" not in st.session_state:
+    st.session_state["pdf_report_symbol_generated"] = False
 
 page_setup("public")
 
@@ -91,17 +90,15 @@ def create_static_public_report(report_type):
     return html_content
 
 
-def generate_static_public_report(report_type):
-    with st.spinner(f"Generating {report_type} report"):
-        html_content = create_static_public_report(report_type)
+# Function to generate the standard report
+def generate_static_public_report():
+    with st.spinner("Generating standard report..."):
+        html_content = create_static_public_report("standard")
         with NamedTemporaryFile(suffix=".pdf") as temp:
             weasyprint.HTML(string=html_content).write_pdf(temp)
             temp.seek(0)
-            st.session_state[f"pdf_report_{report_type}"] = open(temp.name, "rb")
-        st.session_state["generating_standard_report"] = (
-            False  # Reset state after generation
-        )
-        st.session_state["pdf_report_generated"] = True  # Mark report as generated
+            st.session_state["pdf_report_standard"] = temp.read()
+        st.session_state["pdf_report_standard_generated"] = True
 
 
 # Create content for public symbol survey
@@ -161,32 +158,25 @@ def create_static_symbol_report(report_type):
     return html_content
 
 
-def generate_static_symbol_report(report_type):
-    with st.spinner(f"Generating {report_type} report"):
-        html_content = create_static_symbol_report(report_type)
+# Function to generate the symbol report
+def generate_static_symbol_report():
+    with st.spinner("Generating symbol report..."):
+        html_content = create_static_symbol_report("symbol")
         with NamedTemporaryFile(suffix=".pdf") as temp:
             weasyprint.HTML(string=html_content).write_pdf(temp)
             temp.seek(0)
-            st.session_state[f"pdf_report_{report_type}"] = open(temp.name, "rb")
-        st.session_state["generating_symbol_report"] = (
-            False  # Reset state after generation
-        )
-        st.session_state["symbol_report_generated"] = True  # Mark report as generated
+            st.session_state["pdf_report_symbol"] = temp.read()
+        st.session_state["pdf_report_symbol_generated"] = True
 
 
-st.markdown("""
-**The standard survey**""")
+st.markdown("**The standard survey**")
 
 # Button to generate standard survey report
-if not st.session_state["pdf_report_generated"]:
-    if st.button(
-        "💡 Generate standard survey report - this will take around 30 seconds"
-    ):
-        st.session_state["generating_standard_report"] = True
-        generate_static_public_report("standard")
+if st.button("💡 Generate standard survey report - this will take around 30 seconds"):
+    generate_static_public_report()
 
-# If report has been generated, show download button
-if st.session_state["pdf_report_generated"]:
+# Show the download button if the standard report is generated
+if st.session_state["pdf_report_standard_generated"]:
     st.download_button(
         label="⬇️ Download standard survey report",
         data=st.session_state["pdf_report_standard"],
@@ -194,23 +184,19 @@ if st.session_state["pdf_report_generated"]:
         mime="application/pdf",
     )
 
-st.markdown("""
-**The symbol survey**""")
+st.markdown("**The symbol survey**")
 
 # Button to generate symbol survey report
-if not st.session_state["symbol_report_generated"]:
-    if st.button("💡 Generate symbol survey report - this will take around 30 seconds"):
-        st.session_state["generating_symbol_report"] = True
-        generate_static_symbol_report("symbol")
+if st.button("💡 Generate symbol survey report - this will take around 30 seconds"):
+    generate_static_symbol_report()
 
-# If report has been generated, show download button
-if st.session_state["symbol_report_generated"]:
+# Show the download button if the symbol report is generated
+if st.session_state["pdf_report_symbol_generated"]:
     st.download_button(
         label="⬇️ Download symbol survey report",
         data=st.session_state["pdf_report_symbol"],
         file_name="kailo_beewell_school_report_symbol.pdf",
         mime="application/pdf",
     )
-
 
 page_footer("schools in Northern Devon")
