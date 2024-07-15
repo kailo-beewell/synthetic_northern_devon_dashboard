@@ -174,11 +174,15 @@ def render_characteristic_tab_markup():
 
 In this section, you can see how young people from across Northern Devon
 responded to each of the questions in the survey. You can view results:
-* For all pupils
-* By year group
-* By gender
-* By free school meal (FSM) eligibility
-* By whether pupils have special educational needs (SEN)""")
+* For **all pupils**
+* By **year group**
+* By **gender**
+* By **free school meal (FSM) eligibility**
+* By whether pupils have **special educational needs (SEN)**
+* By **care experience** - IN DEVELOPMENT
+* By whether pupils are **young carers** - IN DEVELOPMENT
+* By **rurality** (based on postcode) - IN DEVELOPMENT
+* By **deprivation** (based on postcode) - IN DEVELOPMENT """)
 
     # Create selectbox to get chosen topic
     chosen_variable_lab2 = st.selectbox(
@@ -189,7 +193,17 @@ responded to each of the questions in the survey. You can view results:
     # Select pupils to view results for
     chosen_group = st.selectbox(
         label="**Choose a group**:",
-        options=["For all pupils", "By year group", "By gender", "By FSM", "By SEN"],
+        options=[
+            "For all pupils",
+            "By year group",
+            "By gender",
+            "By FSM",
+            "By SEN",
+            "By  care experience",
+            "By young carer status",
+            "By rurality",
+            "By deprivation",
+        ],
     )
     blank_lines(2)
 
